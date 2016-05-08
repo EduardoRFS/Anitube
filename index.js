@@ -38,7 +38,7 @@ async function getPage (originalUrl, res) {
     let href = $(link).attr('href');
     if (!href) return;
     href = url.parse(href);
-    href.host = 'localhost:3000';
+    href.host = 'educhan.net.br';
     $(link).attr('href', url.format(href));
   });
   body('script').map((i, link) => {
@@ -56,7 +56,7 @@ async function getPage (originalUrl, res) {
     if (!src.host) return;
 
     if (src.host.startsWith('www.anitube'))
-      src.host = 'localhost:3000';
+      src.host = 'educhan.net.br';
     $(link).attr('src', url.format(src));
   });
   return body.html();
