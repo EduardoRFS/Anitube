@@ -13,30 +13,30 @@ const wrap = fn => (req, res, next) => fn(req, res, next).catch(next);
 app.use(express.static(path.join(__dirname, 'public')));
 
 let cache = {};
-function autoParse(body, response, resolveWithFullResponse) {
-  // FIXME: The content type string could contain additional values like the charset.
-  let type = response.headers['content-type'];
-  if (type && type.indexOf('text/html') > -1) {
-    return cheerio.load(body);
-  } else {
-    return body;
-  }
-}
 
-async function getPage (originalUrl) {
+async function getPage (originalUrl, res) {
   let body = await request.get({
     url: ANITUBE + originalUrl,
     headers: {
       'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.7 Safari/537.36'
     },
-    transform: autoParse
+    transform: function autoParse(body, response, resolveWithFullResponse) {
+      // FIXME: The content type string could contain additional values like the charset.
+      let type = response.headers['content-type'];
+      res.append('Content-Type', type);
+      if (type && type.indexOf('text/html') > -1) {
+        return cheerio.load(body);
+      } else {
+        return body;
+      }
+    }
   });
   if (typeof body == 'string') return body;
   body('a').map(function (i, link) {
     let href = $(link).attr('href');
     if (!href) return;
     href = url.parse(href);
-    href.host = 'localhost:3000';
+    href.host = 'educhan.net.br';
     $(link).attr('href', url.format(href));
   });
   body('script').map((i, link) => {
@@ -55,7 +55,7 @@ async function getPage (originalUrl) {
     if (!src.host) return;
 
     if (src.host.startsWith('www.anitube'))
-      src.host = 'localhost:3000';
+      src.host = 'educhan.net.br';
     $(link).attr('src', url.format(src));
   });
   return body.html();
