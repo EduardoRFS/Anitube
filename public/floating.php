@@ -1,0 +1,2 @@
+
+	document.writeln(" <iframe border=0 frameborder=0 marginheight=0 marginwidth=0 width=300 height=262 scrolling=no allowtransparency=true src=http://adserver.juicyads.com/adshow.php?adzone=487077></iframe>");
